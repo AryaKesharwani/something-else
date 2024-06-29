@@ -2,14 +2,16 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { Sequelize } = require('sequelize');
+const { Sequelize, Op } = require('sequelize');
 const { Teacher, initializeDb } = require('./models');
+const router = require('./router');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(cors())
+app.use('/teachers',router);
 
 // Initialize the database
 initializeDb().then(() => {
@@ -34,21 +36,23 @@ app.post('/teachers', async (req, res) => {
   res.json(newTeacher);
 });
 
-// Endpoint to search for a teacher by name
+// Updated endpoint to support live search for teachers by name
 app.get('/teachers/search', async (req, res) => {
-    const { name } = req.query;
-    const teachers = await Teacher.findAll({
-        where: {
-            fullName: {
-                [Sequelize.Op.like]: `%${name}%`
-            }
-        }
-    });
-    if (teachers.length > 0) {
-        return res.json(teachers);
-    } else {
-        return res.status(404).json({ error: 'Teacher not found' });
-    }
+  const { name } = req.query;
+  try {
+      const teachers = await Teacher.findAll({
+          where: Sequelize.where(
+              Sequelize.fn('LOWER', Sequelize.col('fullName')),
+              'LIKE',
+              '%' + name.toLowerCase() + '%'
+          ),
+          limit: 10
+      });
+      res.json(teachers);
+  } catch (error) {
+      console.error('Error in teacher search:', error);
+      res.status(500).json({ error: 'An error occurred while searching for teachers' });
+  }
 });
 
 // Endpoint to update a teacher's record
@@ -81,32 +85,59 @@ app.delete('/teachers/:id', async (req, res) => {
   }
 });
 
-// Endpoint to filter teachers by age
-app.get('/teachers/filter/age', async (req, res) => {
-  const { minAge, maxAge } = req.query;
-  const teachers = await Teacher.findAll({
-    where: {
-      age: {
-        [Sequelize.Op.gte]: minAge || 0,
-        [Sequelize.Op.lte]: maxAge || 100
-      }
-    }
-  });
-  res.json(teachers);
-});
+// // Endpoint to filter teachers by age
+// app.get('/teachers/filter/age', async (req, res) => {
+//   const { minAge, maxAge } = req.query;
+//   const teachers = await Teacher.findAll({
+//     where: {
+//       age: {
+//         [Sequelize.Op.gte]: minAge || 0,
+//         [Sequelize.Op.lte]: maxAge || 100
+//       }
+//     }
+//   });
+//   res.json(teachers);
+// });
 
-// Endpoint to filter teachers by number of classes
-app.get('/teachers/filter/classes', async (req, res) => {
-  const { minClasses, maxClasses } = req.query;
-  const teachers = await Teacher.findAll({
-    where: {
-      numClasses: {
-        [Sequelize.Op.gte]: minClasses || 0,
-        [Sequelize.Op.lte]: maxClasses || 100
-      }
-    }
-  });
-  res.json(teachers);
+// // Endpoint to filter teachers by number of classes
+// app.get('/teachers/filter/classes', async (req, res) => {
+//   const { minClasses, maxClasses } = req.query;
+//   const teachers = await Teacher.findAll({
+//     where: {
+//       numClasses: {
+//         [Sequelize.Op.gte]: minClasses || 0,
+//         [Sequelize.Op.lte]: maxClasses || 100
+//       }
+//     }
+//   });
+//   res.json(teachers);
+// });
+
+// Endpoint to filter teachers by age and/or number of classes
+app.get('/teachers/filter', async (req, res) => {
+  const { minAge, maxAge, minClasses, maxClasses } = req.query;
+  
+  let whereClause = {};
+  
+  if (minAge !== undefined || maxAge !== undefined) {
+    whereClause.age = {};
+    if (minAge !== undefined) whereClause.age[Op.gte] = parseInt(minAge);
+    if (maxAge !== undefined) whereClause.age[Op.lte] = parseInt(maxAge);
+  }
+  
+  if (minClasses !== undefined || maxClasses !== undefined) {
+    whereClause.numClasses = {};
+    if (minClasses !== undefined) whereClause.numClasses[Op.gte] = parseInt(minClasses);
+    if (maxClasses !== undefined) whereClause.numClasses[Op.lte] = parseInt(maxClasses);
+  }
+
+  try {
+    const teachers = await Teacher.findAll({ where: whereClause });
+    res.json(teachers);
+  } catch (error) {
+    console.error('Error in teacher filtering:', error);
+    res.status(500).json({ error: 'An error occurred while filtering teachers' });
+  }
 });
 
 // Endpoint to calculate average number of classes
