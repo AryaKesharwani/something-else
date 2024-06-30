@@ -55,7 +55,14 @@ cd frontend
 npm start
 ```
 
-6. Open your browser and navigate to `http://localhost:3000` to access the application.
+## Deployment
+- The backend is deployed on Render.
+- The frontend is deployed on Vercel.
+
+Live links:
+- Backend: [Backend Live Link](https://teacher-management-system-backend.onrender.com/)
+- Frontend: [Frontend Live Link](https://teacher-management-system-frontend.vercel.app/)
+
 
 ## Usage
 - Navigate through the application using the menu bar at the top of the page.
@@ -78,6 +85,6 @@ Contributions to improve the Teacher Management System are welcome. Please follo
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
-Your Name - your.email@example.com
+Your Name - aryakesharwani1234@gmail.com
 
 Project Link: [https://github.com/AryaKesharwani/teacher-management-system](https://github.com/AryaKesharwani/teacher-management-system)
