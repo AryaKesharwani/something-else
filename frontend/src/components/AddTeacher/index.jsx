@@ -65,12 +65,12 @@ const AddTeacher = () => {
           />
         </div>
         <div className="mb-2">
+          <h2 className="text-lg font-bold mb-2">Enter the Date of Birth</h2>
           <input
             type="date"
             className="border p-2 w-full"
             value={form.dateOfBirth}
             onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value })}
-            placeholder='Date of Birth'
           />
         </div>
         <div className="mb-2">
