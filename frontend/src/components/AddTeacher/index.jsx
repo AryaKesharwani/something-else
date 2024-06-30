@@ -70,6 +70,7 @@ const AddTeacher = () => {
             className="border p-2 w-full"
             value={form.dateOfBirth}
             onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value })}
+            placeholder='Date of Birth'
           />
         </div>
         <div className="mb-2">
