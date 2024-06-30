@@ -88,6 +88,9 @@
 import { useState } from 'react';
 import axios from 'axios';
 
+import getURI from '../../config/getURI';
+let uri = getURI();
+
 const FilterTeachers = () => {
   const [teachers, setTeachers] = useState([]);
   const [filter, setFilter] = useState({ minAge: '', maxAge: '', minClasses: '', maxClasses: '' });
@@ -103,7 +106,7 @@ const FilterTeachers = () => {
     setIsLoading(true);
     setError('');
     try {
-      const response = await axios.get('http://localhost:1000/teachers/filter', {
+      const response = await axios.get(`${uri}/teachers/filter`, {
         params: {
           minAge: filter.minAge || undefined,
           maxAge: filter.maxAge || undefined,

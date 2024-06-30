@@ -2,6 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 
+import getURI from '../../config/getURI';
+let uri = getURI();
 
 const DeleteTeacher = () => {
   const [teacherId, setTeacherId] = useState('');
@@ -9,7 +11,7 @@ const DeleteTeacher = () => {
   const deleteTeacher = async (e) => {
     e.preventDefault();
     try {
-      await axios.delete(`http://localhost:1000/teachers/${teacherId}`);
+      await axios.delete(`${uri}/teachers/${teacherId}`);
       toast.success('Teacher record deleted successfully!');
       setTeacherId('');
     } catch (error) {

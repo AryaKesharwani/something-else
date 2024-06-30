@@ -3,6 +3,9 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 
 
+import getURI from '../../config/getURI';
+let uri = getURI();
+
 const AddTeacher = () => {
   const [form, setForm] = useState({ fullName: '', age: '', dateOfBirth: '', numClasses: '' });
 
@@ -29,7 +32,7 @@ const AddTeacher = () => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        await axios.post('http://localhost:1000/teachers', form);
+        await axios.post(`${uri}/teachers`, form);
         setForm({ fullName: '', age: '', dateOfBirth: '', numClasses: '' });
         toast.success('Teacher added successfully!');
       } catch (error) {

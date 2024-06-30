@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import getURI from '../../config/getURI';
+let uri = getURI();
+
 const ShowTeachers = () => {
   const [teachers, setTeachers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -12,7 +15,7 @@ const ShowTeachers = () => {
   const loadTeachers = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('http://localhost:1000/teachers');
+      const response = await axios.get(`${uri}/teachers`);
       setTeachers(response.data);
     } catch (error) {
       console.error('Failed to load teachers:', error);

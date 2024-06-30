@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import getURI from '../../config/getURI';
+let uri = getURI();
+
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -9,7 +12,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get('http://localhost:1000/teachers/dashboard');
+        const response = await axios.get(`${uri}/teachers/dashboard`);
         setDashboardData(response.data);
         setIsLoading(false);
       } catch (err) {

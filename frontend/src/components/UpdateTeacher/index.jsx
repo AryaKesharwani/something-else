@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-
+import getURI from '../../config/getURI';
+let uri = getURI();
 
 const UpdateTeacher = () => {
   const [form, setForm] = useState({ id: '', fullName: '', age: '', dateOfBirth: '', numClasses: '' });
 
   const updateTeacher = async (e) => {
     e.preventDefault();
-    await axios.put(`http://localhost:1000/teachers/${form.id}`, form);
+    await axios.put(`${uri}/teachers/${form.id}`, form);
     setForm({ id: '', fullName: '', age: '', dateOfBirth: '', numClasses: '' });
   };
 

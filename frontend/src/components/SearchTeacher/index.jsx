@@ -81,6 +81,9 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
 
+import getURI from '../../config/getURI';
+let uri = getURI();
+
 const SearchTeacher = () => {
   const [teachers, setTeachers] = useState([]);
   const [searchName, setSearchName] = useState('');
@@ -96,7 +99,7 @@ const SearchTeacher = () => {
       setIsLoading(true);
       setError('');
       try {
-        const response = await axios.get(`http://localhost:1000/teachers/search?name=${name}`);
+        const response = await axios.get(`${uri}/teachers/search?name=${name}`);
         setTeachers(response.data);
       } catch (err) {
         setError('Failed to fetch teachers. Please try again.');
